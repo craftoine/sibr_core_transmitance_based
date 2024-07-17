@@ -43,15 +43,17 @@ struct RichPoint
 	Rot rot;
 };
 
-float sigmoid(const float m1)
+//define sigmoid and inverse_sigmoid
+float sigmoid(float x)
 {
-	return 1.0f / (1.0f + exp(-m1));
+	return 1.f / (1.f + exp(-x));
 }
 
-float inverse_sigmoid(const float m1)
+float inverse_sigmoid(float x)
 {
-	return log(m1 / (1.0f - m1));
+	return -log(1.f / x - 1.f);
 }
+
 
 # define CUDA_SAFE_CALL_ALWAYS(A) \
 A; \
@@ -163,8 +165,15 @@ int loadPly(const char* filename,
 			scales[k].scale[j] = exp(points[i].scale.scale[j]);
 
 		// Activate alpha
-		opacities[k] = sigmoid(points[i].opacity);
-
+		//opacities[k] = sigmoid(points[i].opacity);
+		
+		opacities[k] = points[i].opacity;
+		/*if(opacities[k] <0.f){
+			printf("Negative opacity loaded %f\n", opacities[k]);
+		}
+		if(opacities[k]>1.f){
+			printf("Opacity > 1 loaded %f\n", opacities[k]);
+		}*/
 		shs[k].shs[0] = points[i].shs.shs[0];
 		shs[k].shs[1] = points[i].shs.shs[1];
 		shs[k].shs[2] = points[i].shs.shs[2];
@@ -187,6 +196,7 @@ void savePly(const char* filename,
 	const sibr::Vector3f& minn,
 	const sibr::Vector3f& maxx)
 {
+	printf("Saving to %s\n", filename);
 	// Read all Gaussians at once (AoS)
 	int count = 0;
 	for (int i = 0; i < pos.size(); i++)
@@ -228,7 +238,8 @@ void savePly(const char* filename,
 		for (int j = 0; j < 3; j++)
 			points[count].scale.scale[j] = log(scales[i].scale[j]);
 		// Activate alpha
-		points[count].opacity = inverse_sigmoid(opacities[i]);
+		//points[count].opacity = inverse_sigmoid(opacities[i]);
+		points[count].opacity = opacities[i];
 		points[count].shs.shs[0] = shs[i].shs[0];
 		points[count].shs.shs[1] = shs[i].shs[1];
 		points[count].shs.shs[2] = shs[i].shs[2];
