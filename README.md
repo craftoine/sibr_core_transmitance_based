@@ -1,5 +1,5 @@
 # SIBR Core
-TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEESSSSSSSSSSSSSSSSSSSSSSSSSSSSSTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT
+
 **SIBR** is a System for Image-Based Rendering.  
 It is built around the *sibr-core* in this repo and several *Projects* implementing published research papers.  
 For more complete documentation, see here: [SIBR Documentation](https://sibr.gitlabpages.inria.fr) 
